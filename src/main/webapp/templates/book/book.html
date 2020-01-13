@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <script type="text/javascript" src="/ssm/static/js/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    $.fn.serializeJSON=function(){
+        var serializeObj={};
+        var array=this.serializeArray();
+        $(array).each(function(){
+            if(serializeObj[this.name]){
+                if($.isArray(serializeObj[this.name])){
+                    serializeObj[this.name].push(this.value);
+                }else{
+                    serializeObj[this.name]=[serializeObj[this.name],this.value];
+                }
+            }else{
+                serializeObj[this.name]=this.value;
+            }
+        });
+        return serializeObj;
+    };
+    $(function(){
+        console.log("js ready");
+        $("#submitForm").on('click', function(event){
+            event.preventDefault();
+            console.log("ajax requset");
+            console.log(JSON.stringify($('#bookFrom').serializeJSON()));
+            $.ajax({
+                url : "/ssm/book/bookPageQuery.json",
+                method : 'post',
+                dateType:'json',
+                contentType : 'application/json;charset=utf-8',
+                data : JSON.stringify($('#bookFrom').serializeJSON()),
+                success : function(data) {
+                    console.log(data);
+                },
+                error : function(e) {
+                    console.log("Error" + e);
+                }
+            });
+        });
+    });
+</script>
+1231
+<form id="bookFrom">
+    <table>
+        <tr>
+            <th>ID:</th>
+            <th><input type="text" id="id" name="id"></th>
+        </tr>
+        <tr>
+            <th>ID:</th>
+            <th><input type="text" id="bookId" name="bookId"></th>
+        </tr>
+        <tr>
+            <td>用户名:</td>
+            <td><input type="text" id="bookName" name="bookName"></td>
+        </tr>
+        <tr>
+            <td>用户名:</td>
+            <td><input type="text" id="status" name="status"></td>
+        </tr>
+        <tr>
+            <td><input type="button" value="提交" id="submitForm"></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
